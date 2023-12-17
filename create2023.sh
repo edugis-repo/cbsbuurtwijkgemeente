@@ -80,6 +80,9 @@ if [ ! -f "$filename" ] || [ ! -s  "$filename" ]; then
         -clean gap-fill-area=2000m2 \
         -simplify 18% \
         -clean \
+        -each "indelingswijziging_wijken_en_buurten=null" where="indelingswijziging_wijken_en_buurten===-99999999" \
+        -each "meest_voorkomende_postcode=null" where="meest_voorkomende_postcode===-99999999" \
+        -each "dekkingspercentage=null" where="dekkingspercentage===-99999999" \
         -each "omgevingsadressendichtheid=null" where="omgevingsadressendichtheid===-99999999" \
         -each "stedelijkheid_adressen_per_km2=null" where="stedelijkheid_adressen_per_km2===-99999999" \
         -each "bevolkingsdichtheid_inwoners_per_km2=null" where="bevolkingsdichtheid_inwoners_per_km2===-99999999" \
@@ -138,6 +141,7 @@ if [ ! -f "$filename" ] || [ ! -s "$filename" ]; then
         -clean \
         -filter-slivers min-area=2000m2 \
         -clean gap-fill-area=2000m2 \
+        -each "indelingswijziging_wijken_en_buurten=null" where="indelingswijziging_wijken_en_buurten===-99999999" \
         -each "omgevingsadressendichtheid=null" where="omgevingsadressendichtheid===-99999999" \
         -each "stedelijkheid_adressen_per_km2=null" where="stedelijkheid_adressen_per_km2===-99999999" \
         -each "bevolkingsdichtheid_inwoners_per_km2=null" where="bevolkingsdichtheid_inwoners_per_km2===-99999999" \
