@@ -6,7 +6,7 @@ The data includes demographics and migration.
 
 This project simplifies the map lines, solving some overlaps, slivers and gaps. Also it replaces the -999999 values used by CBS to indicate 'no data' by 'null'
 
-This project also creates a map for provinces (provicinies) as an aggregate of the municipality map.
+This project also creates a map for provinces (provincies) as an aggregate of the municipality map.
 
 ## Prerequisites
 * bash 
