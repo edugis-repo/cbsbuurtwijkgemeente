@@ -6,7 +6,7 @@ import { exit } from 'process';
 
 const csvlines = fs.readFileSync('./kvk2020-wb2023.csv', 'utf8').split('\n').map(l => l.replace('\r', ''));
 
-console.log(csvlines.length);
+console.log(`inkomen csv file has ${csvlines.length} lines`);
 
 if (csvlines[13].split(';')[0] !== 'Nederland') {
   console.log('line 13 is not Nederland');
@@ -53,37 +53,53 @@ for (let i = 13; i < csvlines.length; i++) {
   }
 }
 
-console.log(`nederland: ${nederland.length}`);
-console.log(`gemeenten: ${gemeenten.length}`);
-console.log(`wijken: ${wijken.length}`);
+//console.log(`nederland: ${nederland.length}`);
+//console.log(`gemeenten: ${gemeenten.length}`);
+//console.log(`wijken: ${wijken.length}`);
 
-const gemeentenGeojson = JSON.parse(fs.readFileSync('../intermediate/gemeenten_2023.geo.json'));
-for (const gemeente of gemeenten) {
-  const features = gemeentenGeojson.features.filter(f => f.properties.gemeentecode === gemeente.code && f.properties.water !== 'JA');
-  if (!features.length) {
-    console.error(`gemeente ${gemeente.naam} not found in geojson`);
-    exit(1);
-  }
-  for (const feature of features) {
-    feature.properties.gemiddeld_inkomen = gemeente.gemiddeld_inkomen;
-    feature.properties.percentage_laaginkomen = gemeente.percentage_laaginkomen;
-    feature.properties.percentage_hooginkomen = gemeente.percentage_hooginkomen;
-  }
-}
-fs.writeFileSync('../intermediate/gemeenten_2023_inkomen.geo.json', JSON.stringify(gemeentenGeojson));
+let result = [];
 
-const wijkenGeojson = JSON.parse(fs.readFileSync('../intermediate/cbs_wijken_2023.geo.json'));
-for (const wijk of wijken) {
-  const features = wijkenGeojson.features.filter(f => f.properties.wijkcode === wijk.code && f.properties.water !== 'JA');
-  if (!features.length) {
-    console.error(`wijk ${wijk.naam} not found in geojson`);
-    exit(1);
+const gemeentefile = "../intermediate/gemeenten_2023.geo.json";
+const gemeenteinkomenfile = "../intermediate/gemeenten_2023_inkomen.geo.json";
+if (!fs.existsSync(gemeenteinkomenfile) && fs.existsSync(gemeentefile)) {
+  const gemeentenGeojson = JSON.parse(fs.readFileSync(gemeentefile));
+  for (const gemeente of gemeenten) {
+    const features = gemeentenGeojson.features.filter(f => f.properties.gemeentecode === gemeente.code && f.properties.water !== 'JA');
+    if (!features.length) {
+      console.error(`gemeente ${gemeente.naam} not found in geojson`);
+      exit(1);
+    }
+    for (const feature of features) {
+      feature.properties.gemiddeld_inkomen = gemeente.gemiddeld_inkomen;
+      feature.properties.percentage_laaginkomen = gemeente.percentage_laaginkomen;
+      feature.properties.percentage_hooginkomen = gemeente.percentage_hooginkomen;
+    }
   }
-  for (const feature of features) {
-      feature.properties.gemiddeld_inkomen = wijk.gemiddeld_inkomen;
-      feature.properties.percentage_laaginkomen = wijk.percentage_laaginkomen;
-      feature.properties.percentage_hooginkomen = wijk.percentage_hooginkomen;
-  }
+  fs.writeFileSync(gemeenteinkomenfile, JSON.stringify(gemeentenGeojson));
+  result.push('gemeenten');
 }
-fs.writeFileSync('../intermediate/cbs_wijken_2023_inkomen.geo.json', JSON.stringify(wijkenGeojson));
-console.log('done');
+
+const wijkenfile = "../intermediate/cbs_wijken_2023.geo.json";
+const wijkeninkomenfile = "../intermediate/cbs_wijken_2023_inkomen.geo.json";
+if (!fs.existsSync(wijkeninkomenfile) && fs.existsSync(wijkenfile)) {
+  const wijkenGeojson = JSON.parse(fs.readFileSync(wijkenfile));
+  for (const wijk of wijken) {
+    const features = wijkenGeojson.features.filter(f => f.properties.wijkcode === wijk.code && f.properties.water !== 'JA');
+    if (!features.length) {
+      console.error(`wijk ${wijk.naam} not found in geojson`);
+      exit(1);
+    }
+    for (const feature of features) {
+        feature.properties.gemiddeld_inkomen = wijk.gemiddeld_inkomen;
+        feature.properties.percentage_laaginkomen = wijk.percentage_laaginkomen;
+        feature.properties.percentage_hooginkomen = wijk.percentage_hooginkomen;
+    }
+  }
+  fs.writeFileSync(wijkeninkomenfile, JSON.stringify(wijkenGeojson));
+  result.push('wijken');
+}
+if (result.length) {
+  console.log(`importinkomen done for ${result.join(', ')}`);
+} else {
+  console.log(`done, nothing to do (${result.length})`);
+}
