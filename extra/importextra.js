@@ -1,6 +1,9 @@
 // data source inkomen https://www.cbs.nl/nl-nl/maatwerk/2023/35/inkomen-per-gemeente-en-wijk-2020
 // data source autobezit https://www.cbs.nl/nl-nl/maatwerk/2024/08/autobezit-per-huishouden-1-januari-2023
-// file exported from excel to csv: kvk_2020-wb2023.csv
+// files manually exported from excels to csv: 
+//   kvk_2020-wb2023.csv
+//   gem-autobezit-huishouden_2023_gem.csv
+//   gem-autobezit-huishouden_2023_wijk.csv
 
 import fs from 'fs';
 import { exit } from 'process';
