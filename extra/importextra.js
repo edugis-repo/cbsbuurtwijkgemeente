@@ -5,6 +5,8 @@
 //   gem-autobezit-huishouden_2023_gem.csv
 //   gem-autobezit-huishouden_2023_wijk.csv
 
+// todo 2021 and later: see https://www.cbs.nl/nl-nl/dossier/dossier-verstedelijking/waar-zijn-de-inkomens-het-hoogst-
+
 import fs from 'fs';
 import { exit } from 'process';
 
