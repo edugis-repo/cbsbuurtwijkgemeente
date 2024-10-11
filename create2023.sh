@@ -117,17 +117,17 @@ if [ ! -f "$filename" ] || [ ! -s  "$filename" ]; then
         -o output/cbs_buurten_2023_simplified.geo.json
 fi
 
-function add_inkomen() {
-    wijkeninkomen="intermediate/cbs_wijken_2023_inkomen.geo.json"
-    if [ ! -f "$wijkeninkomen" ] && [ -f "intermediate/cbs_wijken_2023.geo.json" ]; then
-        cd inkomen
-        node importinkomen.js
+function add_extra() {
+    wijkenextra="intermediate/cbs_wijken_2023_extra.geo.json"
+    if [ ! -f "$wijkenextra" ] && [ -f "intermediate/cbs_wijken_2023.geo.json" ]; then
+        cd extra
+        node importextra.js
         cd ..
     fi
-    gemeenteinkomen="intermediate/gemeenten_2023_inkomen.geo.json"
-    if [ ! -f "$gemeenteinkomen" ] && [ -f "intermediate/gemeenten_2023.geo.json" ]; then
-        cd inkomen
-        node importinkomen.js
+    gemeenteextra="intermediate/gemeenten_2023_extra.geo.json"
+    if [ ! -f "$gemeenteextra" ] && [ -f "intermediate/gemeenten_2023.geo.json" ]; then
+        cd extra
+        node importextra.js
         cd ..
     fi
 }
@@ -147,11 +147,11 @@ filename="output/cbs_wijken_2023_simplified.geo.json"
 if [ ! -f "$filename" ] || [ ! -s "$filename" ]; then
     rm -f "$filename"
     get_wijken_json
-    echo "add inkomen to wijken"
-    add_inkomen
+    echo "add extra to wijken"
+    add_extra
     get_node_modules
     echo "simplify wijken"
-    npx mapshaper -i intermediate/cbs_wijken_2023_inkomen.geo.json \
+    npx mapshaper -i intermediate/cbs_wijken_2023_extra.geo.json \
         -filter-slivers min-area=2000m2 \
         -clean gap-fill-area=2000m2 \
         -simplify 10% \
@@ -210,11 +210,11 @@ filename="output/gemeenten_2023_simplified.geo.json"
 if [ ! -f "$filename" ] || [ ! -s "$filename" ]; then
     rm -f "$filename"
     get_gemeenten_json
-    echo "add inkomen to gemeenten"
-    add_inkomen
+    echo "add extra to gemeenten"
+    add_extra
     get_node_modules
     echo "simplify gemeenten"
-    npx mapshaper -i intermediate/gemeenten_2023_inkomen.geo.json \
+    npx mapshaper -i intermediate/gemeenten_2023_extra.geo.json \
         -filter-slivers min-area=2000m2 \
         -clean gap-fill-area=2000m2 \
         -simplify 3.5% \
