@@ -23,6 +23,12 @@ function convertToRecord(parts) {
   }
 }
 
+function assignFeatureProperties(feature, record) {
+  feature.properties.gemiddeld_inkomen_2020 = record.gemiddeld_inkomen;
+  feature.properties.percentage_laaginkomen_2020 = record.percentage_laaginkomen;
+  feature.properties.percentage_hooginkomen_2020 = record.percentage_hooginkomen;
+}
+
 const nederland = [];
 const gemeenten = [];
 const wijken = [];
@@ -70,9 +76,7 @@ if (!fs.existsSync(gemeenteinkomenfile) && fs.existsSync(gemeentefile)) {
       exit(1);
     }
     for (const feature of features) {
-      feature.properties.gemiddeld_inkomen = gemeente.gemiddeld_inkomen;
-      feature.properties.percentage_laaginkomen = gemeente.percentage_laaginkomen;
-      feature.properties.percentage_hooginkomen = gemeente.percentage_hooginkomen;
+      assignFeatureProperties(feature, gemeente);
     }
   }
   fs.writeFileSync(gemeenteinkomenfile, JSON.stringify(gemeentenGeojson));
@@ -90,9 +94,7 @@ if (!fs.existsSync(wijkeninkomenfile) && fs.existsSync(wijkenfile)) {
       exit(1);
     }
     for (const feature of features) {
-        feature.properties.gemiddeld_inkomen = wijk.gemiddeld_inkomen;
-        feature.properties.percentage_laaginkomen = wijk.percentage_laaginkomen;
-        feature.properties.percentage_hooginkomen = wijk.percentage_hooginkomen;
+        assignFeatureProperties(feature, wijk);
     }
   }
   fs.writeFileSync(wijkeninkomenfile, JSON.stringify(wijkenGeojson));
